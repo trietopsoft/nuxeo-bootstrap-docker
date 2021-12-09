@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPO="https://github.com/trietopsoft/nuxeo-bootstrap-docker"
+REPO="https://github.com/trietopsoft/nuxeo-bootstrap-docker.git"
 LATEST_IMAGE="nuxeo:10.10"
 
 MONGO_VERSION="4.2"

@@ -48,7 +48,7 @@ fi
 
 docker run --rm -v ${TMP_DIR}:/var/lib/nuxeo/:rw ${FROM_IMAGE} \
        nuxeoctl register "${STUDIO_USERNAME}" "${APPLICATION_NAME}" "dev" "Docker" "${STUDIO_CREDENTIALS}"
-CLID="${TMP_DIR}/instance.clid"
+CLID="${TMP_DIR}/data/instance.clid"
 cp ${CLID} init/nuxeo.clid
 # Write CLID to file
 if [ -f ${CLID} ]; then

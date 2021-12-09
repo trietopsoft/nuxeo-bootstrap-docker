@@ -1,12 +1,10 @@
 #!/bin/bash
 
-REPO="https://github.com/nuxeo-sandbox/nuxeo-presales-docker"
-DOCKER_PRIVATE="docker-private.packages.nuxeo.com"
-LTS_IMAGE="${DOCKER_PRIVATE}/nuxeo/nuxeo:2021"
-LATEST_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
+REPO="https://github.com/nuxeo-sandbox/nuxeo-bootstrap-docker"
+LATEST_IMAGE="nuxeo:10.10"
 
-MONGO_VERSION="4.4"
-ELASTIC_VERSION="7.9.3"
+MONGO_VERSION="4.2"
+ELASTIC_VERSION="6.8.20"
 
 CHECKS=()
 # Check for commands used in this script
@@ -104,74 +102,12 @@ then
   FQDN="localhost"
 fi
 
-# Choose image
-# Cloud image is deprecated, just default to LTS
-IMAGE_TYPE="LTS"
-AUTO_IMAGE=""
-FROM_IMAGE=""
-if [ -z "${IMAGE_TYPE}" ]
-then
-  echo "Which image? (LTS requires a Nuxeo Docker login)"
-  select lc in "Latest" "LTS"
-  do
-      if [[ "$lc" == "LTS" || "$lc" == "2" ]] || [[ "$lc" == "Latest" || "$lc" == "1" ]]
-      then
-          break
-      fi
-  done
-else
-  lc=${IMAGE_TYPE}
-  AUTO_IMAGE="y"
-fi
-lc=$(echo "${lc}" | awk '{print tolower($0)}')
-if [[ "$lc" == "lts" || "$lc" == "2" ]]
-then
-  echo "LTS selected"
-  FROM_IMAGE=${LTS_IMAGE}
-  IMAGE_TYPE="lts"
-elif [[ "$lc" == "latest" || "$lc" == "1" ]]
-then
-  echo "Latest selected"
-  FROM_IMAGE=${LATEST_IMAGE}
-  IMAGE_TYPE="latest"
-else
-  echo "Invalid image type '${lc}', using Latest image"
-  FROM_IMAGE=${LATEST_IMAGE}
-  IMAGE_TYPE="latest"
-fi
+FROM_IMAGE=${LATEST_IMAGE}
+IMAGE_TYPE="latest"
 
 export FROM_IMAGE
 echo ""
 echo "Using Image: ${FROM_IMAGE}"
-
-# Check Docker repo configuration
-if [[ "${FROM_IMAGE}" == "${LTS_IMAGE}" ]]
-then
-  grep -q ${DOCKER_PRIVATE} ${HOME}/.docker/config.json
-  FOUND=$?
-  DOCKER=""
-  if [ -z "${AUTO_IMAGE}" ] && [[ "${FOUND}" == "0" ]]
-  then
-    echo -n "Docker login found.  Would you like to use the existing credentials? y/n [y]: "
-    read DOCKER
-  fi
-  if [[ ${FOUND} == "0" ]] && [[ "${DOCKER}" == "n" || "${DOCKER}" == "N" ]]
-  then
-    STUDIO_PACKAGE="${STUDIO_PACKAGE} nuxeo-web-ui"
-    FOUND="1"
-  fi
-  if [[ "${FOUND}" != "0" ]]
-  then
-    echo "Please provide your login credentials for ${DOCKER_PRIVATE}:"
-    docker login ${DOCKER_PRIVATE}
-    EXEC=$?
-    if [[ "${EXEC}" != "0" ]]
-    then
-      echo "Unable to complete docker login :-("
-      exit 1
-    fi
-  fi
-fi
 
 # Prompt for Studio Login
 STUDIO_USERNAME=${STUDIO_USERNAME:-}
@@ -267,6 +203,9 @@ FQDN=${FQDN}
 STUDIO_USERNAME=${STUDIO_USERNAME}
 STUDIO_CREDENTIALS=${CREDENTIALS}
 EOF
+
+# Build everything in init/nuxeo.conf
+cat ${NX_STUDIO}/conf/*.conf > ${NX_STUDIO}/init/nuxeo.conf
 
 # Run everything in NX_STUDIO dir
 cd ${NX_STUDIO}

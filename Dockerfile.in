@@ -22,19 +22,17 @@ ENV LANG="en_US.UTF-8" \
 
 # Create out of place stream directory
 ENV NUXEO_HOME /opt/nuxeo/server
-RUN mkdir -p ${XVAR}NUXEO_HOME/stream \
-  && chown 900:0 ${XVAR}NUXEO_HOME/stream && chmod g+rwX ${XVAR}NUXEO_HOME/stream
+#RUN mkdir -p ${XVAR}NUXEO_HOME/stream \
+#  && chown 900:0 ${XVAR}NUXEO_HOME/stream && chmod g+rwX ${XVAR}NUXEO_HOME/stream
 
-# Install RPM Fusion free repository
-RUN yum -y localinstall --nogpgcheck https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-7.noarch.rpm \
-    && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-rpmfusion-free-el-7 \
-    && yum -y install ffmpeg mediainfo x264 x265 ipa-mincho-fonts
+# Install media libs
+RUN apt-get update && apt-get install --quiet -y ffmpeg mediainfo x264 x265
 
 # Dependencies for GLB thumbnail generation
 #RUN yum -y install alsa-lib at-spi2-atk libX11 libXcomposite libXcursor libXdamage libXext libXi libXtst libXScrnSaver libXrandr libXrandr atk pango gtk3
 
 # Add additional RPMs to the source image
-RUN if [ -n "${XVAR}{INSTALL_RPM}" ]; then yum -y install ${XVAR}{INSTALL_RPM}; fi
+#RUN if [ -n "${XVAR}{INSTALL_RPM}" ]; then yum -y install ${XVAR}{INSTALL_RPM}; fi
 
 # !!! DO NOT CHANGE ABOVE THIS LINE !!!
 
@@ -51,13 +49,13 @@ RUN if [ -n "${XVAR}{INSTALL_RPM}" ]; then yum -y install ${XVAR}{INSTALL_RPM}; 
 # Install remote packages and a local package with its dependencies
 # RUN /install-packages.sh --clid ${XVAR}{NUXEO_CLID} nuxeo-web-ui nuxeo-drive ${XVAR}NUXEO_HOME/local-packages/local-package.zip
 
-RUN usermod -aG 998 nuxeo
+RUN usermod -aG 1000 nuxeo
 
 # >>> Make your changes ABOVE this line <<<
 
 # !!! DO NOT CHANGE BELOW THIS LINE (except for noted items) !!!
 # Set back original (nuxeo) user
-USER 900
+USER 1000
 
 # (Optional) Include the google credentials.
 # Replace the filename with your value

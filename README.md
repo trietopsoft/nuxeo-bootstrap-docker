@@ -1,33 +1,25 @@
 # Nuxeo Presales Docker Template
 
-Docker Compose stack for running **Nuxeo 11.x** or **LTS 2021**.
+Docker Compose stack for running **Nuxeo LTS 2019**.
 
 See the [Wiki](https://github.com/nuxeo-sandbox/nuxeo-presales-docker/wiki) for additional documentation.
 
 ## Compatible Versions
 
-This stack is built for and compatible with **Nuxeo 2021 LTS** and **Cloud** release.
+This stack is built for and compatible with **Nuxeo 2019 LTS**.
 
 ## Getting Started
 
 If you are planning to run Nuxeo on your local laptop, use the bootstrap script:
 
 ```
-bash -c "$(curl -fsSL https://raw.github.com/nuxeo-sandbox/nuxeo-presales-docker/master/bootstrap.sh)"
+bash -c "$(curl -fsSL https://raw.github.com/trietopsoft/nuxeo-bootstrap-docker/master/bootstrap.sh)"
 ```
 
 This script will ask you for your Studio Project ID, Version (default is master),
 and configured hostname (default is 'localhost').
 
 Need an account or project?  Go to https://connect.nuxeo.com/
-
-You can then choose between the Cloud (public) and LTS (private) images.  If LTS
-is selected, you will need to use your Sonatype User Token credentials to log into
-the repository.  Navigate to https://packages.nuxeo.com/ and use the "Sign In"
-link in the upper right to log into the system.  Once logged in, access your user
-token with this link: https://packages.nuxeo.com/#user/usertoken - you may create,
-access existing token, or reset the token here.  Your "token name code" is your
-docker username and your "token pass code" is your password.
 
 The next set of prompts will ask for your Studio username and Studio token.
 Please obtain the token from https://connect.nuxeo.com/nuxeo/site/connect/tokens

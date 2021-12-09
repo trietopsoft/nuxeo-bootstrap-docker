@@ -21,7 +21,7 @@ fi
 
 FROM_IMAGE=$(grep '^NUXEO_IMAGE' ${NUXEO_ENV} | tail -n 1 | cut -d '=' -f2)
 if [ -z "${FROM_IMAGE}" ]; then
-  FROM_IMAGE="docker.packages.nuxeo.com/nuxeo/nuxeo:latest"
+  FROM_IMAGE="nuxeo:10.10"
   echo "Upstream image 'NUXEO_IMAGE' is not set in ${NUXEO_ENV}, using: ${FROM_IMAGE}"
 fi
 
@@ -49,6 +49,7 @@ fi
 docker run --rm -v ${TMP_DIR}:/var/lib/nuxeo/:rw ${FROM_IMAGE} \
        nuxeoctl register "${STUDIO_USERNAME}" "${APPLICATION_NAME}" "dev" "Docker" "${STUDIO_CREDENTIALS}"
 CLID="${TMP_DIR}/instance.clid"
+cp ${CLID} init/nuxeo.clid
 # Write CLID to file
 if [ -f ${CLID} ]; then
   echo -n "NUXEO_CLID=" >> ${NUXEO_ENV}
